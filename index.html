@@ -16,7 +16,7 @@
     }
 
     .container {
-        width: 400px;
+        width: 420px;
         text-align: center;
     }
 
@@ -54,10 +54,22 @@
         100% { background-color: green; }
     }
 
-    button {
+    .buttons {
         margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    #startButton {
         padding: 12px 30px;
         font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    #resetButton {
+        padding: 6px 15px;
+        font-size: 0.8rem;
         cursor: pointer;
     }
 </style>
@@ -95,47 +107,70 @@
         </div>
     </div>
 
-    <button id="startButton">START</button>
+    <div class="buttons">
+        <button id="startButton">START</button>
+        <button id="resetButton">RESET</button>
+    </div>
 
 </div>
 
 <script>
-let timer;
-let seconds = 0;
+let timer = null;
 
-const targets = {
+const initialTimes = {
     roska: 232,
     hradeckega: 201,
     strelisce: 181,
     rakovnik: 121
 };
 
-document.getElementById("startButton").addEventListener("click", function() {
+let remainingTimes = { ...initialTimes };
 
-    if (timer) return; // prevent multiple intervals
+document.getElementById("startButton").addEventListener("click", function() {
+    if (timer) return;
 
     timer = setInterval(function() {
-        seconds++;
+        let allFinished = true;
 
-        updateBar("roska");
-        updateBar("hradeckega");
-        updateBar("strelisce");
-        updateBar("rakovnik");
+        for (let id in remainingTimes) {
+            if (remainingTimes[id] > 0) {
+                remainingTimes[id]--;
+                updateBar(id);
+                allFinished = false;
+            }
+        }
+
+        if (allFinished) {
+            clearInterval(timer);
+            timer = null;
+        }
 
     }, 1000);
 });
 
+document.getElementById("resetButton").addEventListener("click", function() {
+    clearInterval(timer);
+    timer = null;
+
+    remainingTimes = { ...initialTimes };
+
+    for (let id in remainingTimes) {
+        const element = document.getElementById(id);
+        element.style.width = "0%";
+        element.classList.remove("flash");
+    }
+});
+
 function updateBar(id) {
     const element = document.getElementById(id);
-    const target = targets[id];
+    const total = initialTimes[id];
+    const remaining = remainingTimes[id];
 
-    let percentage = (seconds / target) * 100;
+    const percentage = ((total - remaining) / total) * 100;
+    element.style.width = percentage + "%";
 
-    if (percentage >= 100) {
-        element.style.width = "100%";
+    if (remaining === 0) {
         element.classList.add("flash");
-    } else {
-        element.style.width = percentage + "%";
     }
 }
 </script>
