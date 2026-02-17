@@ -1,46 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer App</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-        #timer {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <div>
-        <div id="timer">0 seconds</div>
-        <button id="startButton">Start Timer</button>
-    </div>
-    <script>
-        let timer;
-        let seconds = 0;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading Timer App</title>
 
-        document.getElementById('startButton').addEventListener('click', function() {
-            if (!timer) {
-                timer = setInterval(function() {
-                    seconds++;
-                    document.getElementById('timer').innerText = seconds + ' seconds';
-                }, 1000);
-            }
-        });
-    </script>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        width: 400px;
+        text-align: center;
+    }
+
+    .bar-container {
+        margin: 15px 0;
+    }
+
+    .label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .progress {
+        width: 100%;
+        height: 25px;
+        background-color: #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background-color: green;
+        transition: width 1s linear;
+    }
+
+    .flash {
+        animation: flashGreen 1s infinite;
+    }
+
+    @keyframes flashGreen {
+        0% { background-color: green; }
+        50% { background-color: lime; }
+        100% { background-color: green; }
+    }
+
+    button {
+        margin-top: 30px;
+        padding: 12px 30px;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="bar-container">
+        <div class="label">ROŠKA</div>
+        <div class="progress">
+            <div id="roska" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="bar-container">
+        <div class="label">HRADECKEGA</div>
+        <div class="progress">
+            <div id="hradeckega" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="bar-container">
+        <div class="label">STRELIŠČE</div>
+        <div class="progress">
+            <div id="strelisce" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="bar-container">
+        <div class="label">RAKOVNIK</div>
+        <div class="progress">
+            <div id="rakovnik" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <button id="startButton">START</button>
+
+</div>
+
+<script>
+let timer;
+let seconds = 0;
+
+const targets = {
+    roska: 232,
+    hradeckega: 201,
+    strelisce: 181,
+    rakovnik: 121
+};
+
+document.getElementById("startButton").addEventListener("click", function() {
+
+    if (timer) return; // prevent multiple intervals
+
+    timer = setInterval(function() {
+        seconds++;
+
+        updateBar("roska");
+        updateBar("hradeckega");
+        updateBar("strelisce");
+        updateBar("rakovnik");
+
+    }, 1000);
+});
+
+function updateBar(id) {
+    const element = document.getElementById(id);
+    const target = targets[id];
+
+    let percentage = (seconds / target) * 100;
+
+    if (percentage >= 100) {
+        element.style.width = "100%";
+        element.classList.add("flash");
+    } else {
+        element.style.width = percentage + "%";
+    }
+}
+</script>
+
 </body>
 </html>
