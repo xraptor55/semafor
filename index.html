@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading Timer App</title>
+<title>Aviation Countdown Panel</title>
 
 <style>
     body {
@@ -11,66 +11,87 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background-color: #f0f0f0;
-        font-family: Arial, sans-serif;
+        background-color: #1a1f24;
+        font-family: "Courier New", monospace;
+        color: #00ff88;
     }
 
     .container {
-        width: 420px;
+        width: 500px;
         text-align: center;
     }
 
     .bar-container {
-        margin: 15px 0;
+        margin: 35px 0; /* MORE VERTICAL SPACE */
     }
 
     .label {
-        margin-bottom: 5px;
-        font-weight: bold;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
     }
 
     .progress {
         width: 100%;
-        height: 25px;
-        background-color: #ddd;
-        border-radius: 5px;
+        height: 45px; /* BIGGER BARS */
+        background-color: #2a2f36;
+        border-radius: 6px;
         overflow: hidden;
+        position: relative;
+        border: 2px solid #00ff88;
+        box-shadow: 0 0 10px #00ff88 inset;
     }
 
     .progress-fill {
         height: 100%;
         width: 0%;
-        background-color: green;
+        background: linear-gradient(to right, #004d2b, #00ff88);
         transition: width 1s linear;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: black;
     }
 
     .flash {
-        animation: flashGreen 1s infinite;
+        animation: flashGreen 0.8s infinite;
     }
 
     @keyframes flashGreen {
-        0% { background-color: green; }
-        50% { background-color: lime; }
-        100% { background-color: green; }
+        0% { background: #00ff88; }
+        50% { background: #33ff33; }
+        100% { background: #00ff88; }
     }
 
     .buttons {
-        margin-top: 30px;
+        margin-top: 40px;
         display: flex;
         justify-content: center;
-        gap: 10px;
+        gap: 15px;
     }
 
     #startButton {
-        padding: 12px 30px;
-        font-size: 1.2rem;
+        padding: 14px 40px;
+        font-size: 1.3rem;
+        background-color: #00ff88;
+        border: none;
         cursor: pointer;
+        font-weight: bold;
     }
 
     #resetButton {
-        padding: 6px 15px;
+        padding: 6px 18px;
         font-size: 0.8rem;
+        background-color: #555;
+        color: white;
+        border: none;
         cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.8;
     }
 </style>
 </head>
@@ -82,28 +103,28 @@
     <div class="bar-container">
         <div class="label">ROŠKA</div>
         <div class="progress">
-            <div id="roska" class="progress-fill"></div>
+            <div id="roska" class="progress-fill">232</div>
         </div>
     </div>
 
     <div class="bar-container">
         <div class="label">HRADECKEGA</div>
         <div class="progress">
-            <div id="hradeckega" class="progress-fill"></div>
+            <div id="hradeckega" class="progress-fill">201</div>
         </div>
     </div>
 
     <div class="bar-container">
         <div class="label">STRELIŠČE</div>
         <div class="progress">
-            <div id="strelisce" class="progress-fill"></div>
+            <div id="strelisce" class="progress-fill">181</div>
         </div>
     </div>
 
     <div class="bar-container">
         <div class="label">RAKOVNIK</div>
         <div class="progress">
-            <div id="rakovnik" class="progress-fill"></div>
+            <div id="rakovnik" class="progress-fill">121</div>
         </div>
     </div>
 
@@ -158,6 +179,7 @@ document.getElementById("resetButton").addEventListener("click", function() {
         const element = document.getElementById(id);
         element.style.width = "0%";
         element.classList.remove("flash");
+        element.innerText = initialTimes[id];
     }
 });
 
@@ -168,6 +190,7 @@ function updateBar(id) {
 
     const percentage = ((total - remaining) / total) * 100;
     element.style.width = percentage + "%";
+    element.innerText = remaining;
 
     if (remaining === 0) {
         element.classList.add("flash");
